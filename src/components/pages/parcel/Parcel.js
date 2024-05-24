@@ -1,6 +1,11 @@
 import "./parcel.css";
 import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+  GridToolbar,
+} from "@mui/x-data-grid";
 import axios from "axios";
 import { Button, Stack, buttonBaseClasses } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -20,6 +25,14 @@ const style = {
   p: 4,
 };
 
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
+
 export default function Parcel() {
   const [userData, setUserData] = React.useState([]);
 
@@ -31,26 +44,87 @@ export default function Parcel() {
   const columns = [
     { field: "count", headerName: "#", width: 150 },
     {
-      field: "Merchandiser",
+      field: "date",
+      headerName: "Date",
+      width: 300,
+    },
+    {
+      field: "inputId",
+      headerName: "Input ID",
+      width: 300,
+    },
+    {
+      field: "name",
       headerName: "Merchandiser",
+      width: 300,
+    },
+    {
+      field: "UserEmail",
+      headerName: "Email",
+      width: 300,
+    },
+    {
+      field: "accountNameBranchManning",
+      headerName: "Account Name Branch",
+      width: 300,
+    },
+    {
+      field: "period",
+      headerName: "period",
+      width: 300,
+    },
+    {
+      field: "month",
+      headerName: "month",
+      width: 300,
+    },
+    {
+      field: "week",
+      headerName: "week",
       width: 200,
     },
     {
-      field: "branch",
-      headerName: "Branch",
-      width: 300,
+      field: "category",
+      headerName: "category",
+      width: 200,
+      //type: buttonBaseClasses,
     },
-    // {
-    //   field: "non_bulk",
-    //   headerName: "Non-Bulk",
-    //   width: 200,
-    // },
-    // {
-    //   field: "total_parcel",
-    //   headerName: "Total",
-    //   width: 200,
-    //   type: buttonBaseClasses,
-    // },
+    {
+      field: "skuDescription",
+      headerName: "skuDescription",
+      width: 200,
+    },
+    {
+      field: "products",
+      headerName: "products",
+      width: 200,
+    },
+    {
+      field: "status",
+      headerName: "status",
+      width: 200,
+    },
+    {
+      field: "beginning",
+      headerName: "beginning",
+      width: 200,
+    },
+    {
+      field: "delivery",
+      headerName: "delivery",
+      width: 200,
+    },
+    {
+      field: "inventoryDaysLevel",
+      headerName: "inventoryDaysLevel",
+      width: 200,
+    },
+    {
+      field: "noOfDaysOOS",
+      headerName: "noOfDaysOOS",
+      width: 200,
+    },
+
     {
       field: "action",
       headerName: "Action",
@@ -83,17 +157,32 @@ export default function Parcel() {
 
   async function getUser() {
     await axios
-      .post("http://192.168.50.139:8082/retrieve-parcel-data")
+      .post("http://192.168.50.168:8080/retrieve-parcel-data")
       .then(async (response) => {
         const data = await response.data.data;
+        console.log(data, "test");
 
         const newData = data.map((data, key) => {
           return {
             count: key + 1,
-            bulk: data.count_bulk,
-            non_bulk: data.count_non_bulk,
-            total_parcel: data.count_non_bulk + data.count_bulk,
-            email: data.user,
+            date: data.date,
+            inputId: data.inputId,
+            name: data.name,
+            UserEmail: data.userEmail,
+            accountNameBranchManning: data.accountNameBranchManning,
+            period: data.period,
+            month: data.month,
+            week: data.week,
+            category: data.category,
+            skuDescription: data.skuDescription,
+            products: data.products,
+            status: data.status,
+            beginning: data.beginning,
+            delivery: data.delivery,
+            ending: data.ending,
+            offtake: data.offtake,
+            inventoryDaysLevel: data.inventoryDaysLevel,
+            noOfDaysOOS: data.noOfDaysOOS,
           };
         });
         console.log(newData, "testing par");
@@ -115,6 +204,9 @@ export default function Parcel() {
             pagination: {
               paginationModel: { page: 0, pageSize: 10 },
             },
+          }}
+          slots={{
+            toolbar: CustomToolbar,
           }}
           pageSizeOptions={[5, 10]}
           getRowId={(row) => row.count}
