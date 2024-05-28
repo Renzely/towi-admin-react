@@ -33,7 +33,7 @@ function CustomToolbar() {
   );
 }
 
-export default function Parcel() {
+export default function RTV() {
   const [userData, setUserData] = React.useState([]);
 
   const body = { test: "test" };
@@ -48,14 +48,10 @@ export default function Parcel() {
       headerName: "Date",
       width: 200,
     },
+
     {
-      field: "inputId",
-      headerName: "Input ID",
-      width: 200,
-    },
-    {
-      field: "name",
-      headerName: "Merchandiser",
+      field: "merchandiserName",
+      headerName: "Merchandiser Name",
       width: 300,
     },
     {
@@ -64,76 +60,65 @@ export default function Parcel() {
       width: 300,
     },
     {
-      field: "accountNameBranchManning",
-      headerName: "Account Name Branch",
+      field: "item",
+      headerName: "Item",
       width: 350,
     },
     {
-      field: "period",
-      headerName: "Period",
+      field: "quantity",
+      headerName: "Quantity",
       width: 200,
     },
     {
-      field: "month",
-      headerName: "Month",
+      field: "driverName",
+      headerName: "Driver Name",
       width: 200,
     },
     {
-      field: "week",
-      headerName: "Week",
+      field: "plateNumber",
+      headerName: "Plate Number",
       width: 200,
     },
     {
-      field: "category",
-      headerName: "Category",
+      field: "pullOutReason",
+      headerName: "Pull Out Reason",
       width: 200,
       //type: buttonBaseClasses,
     },
-    {
-      field: "skuDescription",
-      headerName: "SKU Description",
-      width: 350,
-    },
-    {
-      field: "products",
-      headerName: "Products",
-      width: 200,
-    },
-    {
-      field: "skuCode",
-      headerName: "SKU Code",
-      width: 150,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 150,
-    },
-    {
-      field: "beginning",
-      headerName: "Beginning",
-      width: 150,
-    },
-    {
-      field: "delivery",
-      headerName: "Delivery",
-      width: 150,
-    },
-    {
-      field: "inventoryDaysLevel",
-      headerName: "InventoryDaysLevel",
-      width: 200,
-    },
-    {
-      field: "noOfDaysOOS",
-      headerName: "No Of Days OOS",
-      width: 150,
-    },
+
+    // {
+    //   field: "action",
+    //   headerName: "Action",
+    //   width: 200,
+    //   sortable: false,
+    //   disableClickEventBubbling: true,
+
+    //   renderCell: (params) => {
+    //     const onClick = (e) => {
+    //       const currentRow = params.row;
+    //       return alert(JSON.stringify(currentRow, null, 4));
+    //     };
+
+    //     return (
+    //       <Stack>
+    //         <Link
+    //           to={"/view-parcel"}
+    //           state={{ state: params.row.email }}
+    //           style={{ textDecoration: "none" }}
+    //         >
+    //           <Button variant="contained" color="warning" size="small">
+    //             View More
+    //           </Button>
+    //         </Link>
+    //       </Stack>
+    //     );
+    //   },
+    // },
   ];
 
   async function getUser() {
     await axios
-      .post("http://192.168.50.167:8080/retrieve-parcel-data")
+      .post("http://192.168.50.167:8080/retrieve-RTV-data")
       .then(async (response) => {
         const data = await response.data.data;
         console.log(data, "test");
@@ -142,24 +127,14 @@ export default function Parcel() {
           return {
             count: key + 1,
             date: data.date,
-            inputId: data.inputId,
-            name: data.name,
+            merchandiserName: data.merchandiserName,
             UserEmail: data.userEmail,
-            accountNameBranchManning: data.accountNameBranchManning,
-            period: data.period,
-            month: data.month,
-            week: data.week,
-            category: data.category,
-            skuDescription: data.skuDescription,
-            products: data.products,
-            skuCode: data.skuCode,
-            status: data.status,
-            beginning: data.beginning,
-            delivery: data.delivery,
-            ending: data.ending,
-            offtake: data.offtake,
-            inventoryDaysLevel: data.inventoryDaysLevel,
-            noOfDaysOOS: data.noOfDaysOOS,
+            outlet: data.outlet,
+            item: data.item,
+            quantity: data.quantity,
+            driverName: data.driverName,
+            plateNumber: data.plateNumber,
+            pullOutReason: data.pullOutReason,
           };
         });
         console.log(newData, "testing par");

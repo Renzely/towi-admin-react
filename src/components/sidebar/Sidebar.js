@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import "./sidebar.css";
 import { Inventory, AssignmentInd, ManageAccounts } from "@mui/icons-material";
+import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
 import { styled } from "styled-components";
 
 export default function Sidebar() {
@@ -26,6 +27,12 @@ export default function Sidebar() {
               <li className="sidebarListItem">
                 <Inventory className="sidebarIcon" />
                 Inventory
+              </li>
+            </Link>
+            <Link to="/view-RTV" style={{ textDecoration: "none" }}>
+              <li className="sidebarListItem">
+                <AssignmentReturnIcon className="sidebarIcon" />
+                RTV
               </li>
             </Link>
           </ul>
