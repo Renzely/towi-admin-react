@@ -7,7 +7,7 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import axios, { isAxiosError } from "axios";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -20,6 +20,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDemoData } from "@mui/x-data-grid-generator";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { Autocomplete } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -75,10 +76,100 @@ export default function Account() {
     setOpenDialog(false);
   };
 
+  const [branches, setBranches] = React.useState([
+    "PUREGOLD PRICE CLUB - LA TRINIDAD BENGUET, ",
+    "PUREGOLD PRICE CLUB - BAGUIO, ",
+    "PUREGOLD PRICE CLUB - LAOAG",
+    "PUREGOLD PRICE CLUB (JR.)- OLD CENTRO",
+    "PUREGOLD PRICE CLUB - CONCEPCION TARLAC",
+    "PUREGOLD PRICE CLUB - CABANATUAN",
+    "PUREGOLD PRICE CLUB - ZARAGOZA",
+    "PUREGOLD PRICE CLUB - GAPAN",
+    "PUREGOLD PRICE CLUB - CAPAS",
+    "PUREGOLD PRICE CLUB - CAUAYAN ISABELA",
+    "PUREGOLD PRICE CLUB (JR.)- PALM PLAZA",
+    "PUREGOLD PRICE CLUB - PANIQUI",
+    "PUREGOLD PRICE CLUB - PUBLIC MARKET",
+    "PUREGOLD PRICE CLUB - ROXAS ISABELA",
+    "PUREGOLD PRICE CLUB - BALER (N.E)",
+    "PUREGOLD PRICE CLUB - MARIA AURORA",
+    "ROBINSONS EASYMART - BALER",
+    "PUREGOLD PRICE CLUB - TUMAUINI",
+    "PUREGOLD PRICE CLUB (EXTRA.)- TUGUEGARAO",
+    "ROBINSONS TUGUEGARAO",
+    "PUREGOLD PRICE CLUB - CENTRO SANTIAGO",
+    "PUREGOLD PRICE CLUB - VICTORY NORTE SANTIAGO (N.E)",
+    "PUREGOLD PRICE CLUB - VIGAN",
+    "PUREGOLD PRICE CLUB - BURNHAM PARK",
+    "PUREGOLD PRICE CLUB (JR.)- BAKAKENG",
+    "PUREGOLD PRICE CLUB - LA UNION",
+    "PUREGOLD PRICE CLUB - BACNOTAN",
+    "PUREGOLD PRICE CLUB - CALASIAO",
+    "PUREGOLD PRICE CLUB - MANAOAG",
+    "PUREGOLD PRICE CLUB (JR.)- BONUAN",
+    "PUREGOLD PRICE CLUB - MAYOMBO",
+    "PUREGOLD PRICE CLUB (JR.)- BAYAMBANG",
+    "PUREGOLD PRICE CLUB - VILLASIS",
+    "PUREGOLD PRICE CLUB - CROSSING (N.E)",
+    "PUREGOLD PRICE CLUB - SAN JOSE NUEVA ECIJA (N.E)",
+    "PUREGOLD PRICE CLUB - ZULUETA (N.E)",
+    "PUREGOLD PRICE CLUB - CABANATUAN PALENGKE (N.E)",
+    "PUREGOLD PRICE CLUB - PACIFIC MALL (N.E)",
+    "PUREGOLD PRICE CLUB - CIRCUMFERENCIAL (N.E)",
+    "PUREGOLD PRICE CLUB - TALAVERA",
+    "PUREGOLD PRICE CLUB - GUIMBA",
+  ]); //Branches
+
+  // State for the second modal
+  const [openBranchModal, setOpenBranchModal] = React.useState(false);
+  const handleOpenBranchModal = () => setOpenBranchModal(true);
+  const handleCloseBranchModal = () => setOpenBranchModal(false);
+
+  // State for selected branches
+  const [selectedBranches, setSelectedBranches] = React.useState([]);
+
+  // Update the branch of the user with the selected branches
+  // Update the branch of the user with the selected branches
+  const handleBranchSave = async () => {
+    try {
+      // Update the user's branches with the selected branches
+      const response = await axios.put(
+        "http://192.168.50.167:8080/update-user-branch",
+        {
+          email_Address: modalEmail,
+          branches: selectedBranches,
+        }
+      );
+
+      console.log("User branches updated:", response.data);
+
+      // Update the branch field in the userData state
+      const updatedUserData = userData.map((user) => {
+        if (user.emailAddress === modalEmail) {
+          return {
+            ...user,
+            Branch: selectedBranches.join(", "), // Update the Branch field
+          };
+        }
+        return user;
+      });
+
+      setUserData(updatedUserData); // Set the updated userData state
+
+      // After successful update, you might want to refresh the user data
+      getUser();
+
+      handleCloseBranchModal(); // Close the branch selection modal after saving
+    } catch (error) {
+      console.error("Error updating user branches:", error);
+    }
+  };
+
   const columns = [
     { field: "count", headerName: "#", width: 150 },
-    { field: "firstName", headerName: "First name", width: 200 },
-    { field: "lastName", headerName: "Last name", width: 200 },
+    { field: "firstName", headerName: "First name", width: 150 },
+    { field: "middleName", headerName: "Middle name", width: 150 },
+    { field: "lastName", headerName: "Last name", width: 150 },
     {
       field: "emailAddress",
       headerName: "Email",
@@ -87,12 +178,12 @@ export default function Account() {
     {
       field: "remarks",
       headerName: "Remarks",
-      width: 200,
+      width: 150,
     },
     {
       field: "contactNum",
       headerName: "Contact Number",
-      width: 200,
+      width: 150,
     },
     {
       field: "Branch",
@@ -102,7 +193,7 @@ export default function Account() {
     {
       field: "isActive",
       headerName: "Status",
-      width: 180,
+      width: 150,
       sortable: false,
       disableClickEventBubbling: true,
 
@@ -123,8 +214,12 @@ export default function Account() {
               <Stack>
                 <ColorButton
                   variant="contained"
-                  size="small"
-                  style={{ width: "50%", marginTop: "13px" }}
+                  size="primary"
+                  style={{
+                    width: "50%",
+                    marginTop: "13px",
+                    backgroundColor: "#ccff90",
+                  }}
                   onClick={onClick}
                 >
                   Active
@@ -157,20 +252,20 @@ export default function Account() {
       renderCell: (params) => {
         const onClick = (e) => {
           let mFullname = params.row.firstName + " " + params.row.lastName;
-          //let condition = params.row.middle_name;
+          let condition = params.row.middleName;
           let mBranch = params.row.Branch;
           let mEmail = params.row.emailAddress;
           let mPhone = params.row.contactNum;
-          // if (condition === "Null") {
-          //   mFullname = params.row.firstName + " " + params.row.lastName;
-          // } else {
-          //   mFullname =
-          //     params.row.first_name +
-          //     " " +
-          //     params.row.middle_name +
-          //     " " +
-          //     params.row.last_name;
-          // }
+          if (condition === "Null") {
+            mFullname = params.row.firstName + " " + params.row.lastName;
+          } else {
+            mFullname =
+              params.row.firstName +
+              " " +
+              params.row.middleName +
+              " " +
+              params.row.lastName;
+          }
 
           setModalFullName(mFullname);
           setModalBranch(mBranch);
@@ -185,9 +280,13 @@ export default function Account() {
             <Button
               variant="contained"
               size="small"
-              color="info"
+              color="primary"
               onClick={onClick}
-              style={{ width: "50%", marginTop: "13px" }}
+              style={{
+                width: "50%",
+                marginTop: "13px",
+                backgroundColor: "2979ff",
+              }}
             >
               View
             </Button>
@@ -199,7 +298,7 @@ export default function Account() {
 
   async function getUser() {
     await axios
-      .post("http://192.168.50.168:8080/get-all-user", requestBody)
+      .post("http://192.168.50.167:8080/get-all-user", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -208,7 +307,7 @@ export default function Account() {
             count: key + 1,
             remarks: data.remarks,
             firstName: data.firstName,
-            //middle_name: data.middle_name ? data.middle_name : "Null",
+            middleName: data.middleName ? data.middleName : "Null",
             lastName: data.lastName,
 
             Branch: data.accountNameBranchManning,
@@ -226,11 +325,11 @@ export default function Account() {
   async function setStatus() {
     console.log("check body", requestBody);
     await axios
-      .put("http://192.168.50.168:8080/update-status", requestBody)
+      .put("http://192.168.50.167:8080/update-status", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
-        console.log(data);
+        console.log(data, "status info");
         window.location.reload();
       });
   }
@@ -291,6 +390,11 @@ export default function Account() {
             <span className="detailTitle">Account Branch Name:</span>{" "}
             <span className="detailDescription">{modalBranch}</span>
             <br></br>
+            <br></br>
+            {/* Button to open branch selection modal */}
+            <Button variant="contained" onClick={handleOpenBranchModal}>
+              Select Branch
+            </Button>
           </Typography>
           <Stack>
             <DialogActions>
@@ -299,6 +403,40 @@ export default function Account() {
           </Stack>
         </Box>
       </Modal>
+
+      <Dialog
+        open={openBranchModal}
+        onClose={handleCloseBranchModal}
+        aria-labelledby="branch-dialog-title"
+        aria-describedby="branch-dialog-description"
+        fullWidth
+        maxWidth="md" // Set the maximum width to 'md' (medium)
+      >
+        <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
+        <DialogContent>
+          <Autocomplete
+            multiple
+            id="branches-autocomplete"
+            options={branches}
+            defaultValue={selectedBranches}
+            onChange={(event, value) => setSelectedBranches(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Select Branch"
+                placeholder="Select Branch"
+              />
+            )}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseBranchModal}>Cancel</Button>
+          <Button onClick={handleBranchSave} autoFocus>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog
         open={openDialog}

@@ -13,6 +13,7 @@ import Parcel from "./components/pages/parcel/Parcel";
 import ViewAttendance from "./components/pages/attendance/ViewAttendance";
 import Account from "./components/pages/account/Account";
 import ViewParcel from "./components/pages/parcel/ViewParcel";
+import RTV from "./components/pages/ReturnToVendor/RTV";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/view-parcel" element={<ViewParcel />} />
           <Route path="/view-attendance" element={<ViewAttendance />} />
           <Route path="/view-accounts" element={<Account />} />
+          <Route path="/view-RTV" element={<RTV />} />
         </Routes>
       </div>
     </div>
